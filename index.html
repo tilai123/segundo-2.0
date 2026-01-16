@@ -1,1 +1,148 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<title>Färgranking</title>
 
+<style>
+  body {
+    margin: 0;
+    font-family: "Segoe UI", sans-serif;
+    background: linear-gradient(135deg, #f6f8ff, #eef1ff);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .app {
+    background: white;
+    width: 420px;
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+  }
+
+  h1 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    margin-bottom: 10px;
+    background: #f4f4f4;
+    border-radius: 10px;
+    cursor: grab;
+    transition: transform 0.1s;
+  }
+
+  li.dragging {
+    opacity: 0.5;
+    transform: scale(1.02);
+  }
+
+  .color-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .swatch {
+    width: 45px;
+    height: 45px;
+    border-radius: 10px;
+    border: 2px solid rgba(0,0,0,0.1);
+  }
+
+  .name {
+    font-weight: 600;
+    text-transform: capitalize;
+  }
+
+  .rank {
+    font-size: 18px;
+    font-weight: bold;
+    color: #555;
+  }
+
+  footer {
+    text-align: center;
+    font-size: 13px;
+    margin-top: 10px;
+    color: #777;
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <h1>🎨 Ranka färger</h1>
+
+  <ul id="list">
+    <li draggable="true"><div class="color-info"><div class="swatch" style="background:#2ecc71"></div><span class="name">grön</span></div><span class="rank">1</span></li>
+    <li draggable="true"><div class="color-info"><div class="swatch" style="background:#ff69b4"></div><span class="name">rosa</span></div><span class="rank">2</span></li>
+    <li draggable="true"><div class="color-info"><div class="swatch" style="background:#87cefa"></div><span class="name">ljusblå</span></div><span class="rank">3</span></li>
+    <li draggable="true"><div class="color-info"><div class="swatch" style="background:#9b59b6"></div><span class="name">lila</span></div><span class="rank">4</span></li>
+    <li draggable="true"><div class="color-info"><div class="swatch" style="background:#f1c40f"></div><span class="name">gul</span></div><span class="rank">5</span></li>
+    <li draggable="true"><div class="color-info"><div class="swatch" style="background:#e67e22"></div><span class="name">orange</span></div><span class="rank">6</span></li>
+    <li draggable="true"><div class="color-info"><div class="swatch" style="background:#e74c3c"></div><span class="name">röd</span></div><span class="rank">7</span></li>
+    <li draggable="true"><div class="color-info"><div class="swatch" style="background:#8e5a2a"></div><span class="name">brun</span></div><span class="rank">8</span></li>
+    <li draggable="true"><div class="color-info"><div class="swatch" style="background:#98ffcc"></div><span class="name">mintgrön</span></div><span class="rank">9</span></li>
+    <li draggable="true"><div class="color-info"><div class="swatch" style="background:#1f3c88"></div><span class="name">mörkblå</span></div><span class="rank">10</span></li>
+    <li draggable="true"><div class="color-info"><div class="swatch" style="background:#e74c3c"></div><span class="name">röd</span></div><span class="rank">11</span></li>
+  </ul>
+
+  <footer>Dra färgerna för att ändra ordning</footer>
+</div>
+
+<script>
+  const list = document.getElementById("list");
+  let draggedItem = null;
+
+  list.querySelectorAll("li").forEach(item => {
+    item.addEventListener("dragstart", () => {
+      draggedItem = item;
+      item.classList.add("dragging");
+    });
+
+    item.addEventListener("dragend", () => {
+      item.classList.remove("dragging");
+      updateRanks();
+    });
+
+    item.addEventListener("dragover", e => e.preventDefault());
+
+    item.addEventListener("drop", () => {
+      if (draggedItem !== item) {
+        const items = [...list.children];
+        const from = items.indexOf(draggedItem);
+        const to = items.indexOf(item);
+
+        if (from < to) {
+          list.insertBefore(draggedItem, item.nextSibling);
+        } else {
+          list.insertBefore(draggedItem, item);
+        }
+      }
+    });
+  });
+
+  function updateRanks() {
+    [...list.children].forEach((li, index) => {
+      li.querySelector(".rank").textContent = index + 1;
+    });
+  }
+</script>
+
+</body>
+</html>
